@@ -10,6 +10,7 @@ from tables import Topic, Educator, Tutorial
 
 
 def main():
+
     tutorials = db.get_tutorials()
     rows = db.get_topic_names()
     
@@ -52,6 +53,7 @@ def login():
             flash(message, "is-info")
 
     return render_template('login.html', form=form)
+
 
 def logout():
     logout_user()
@@ -98,7 +100,9 @@ def tutorial():
     ratings = db.get_tutorial_ratings(tutorialid)
     editcomment = request.args.get('editcomment')
     tutorial = db.get_tutorial(tutorialid)
-    return render_template('tutorial.html', tutorialid = tutorialid, tutorial = tutorial, ratings = ratings, editcomment = editcomment, db = db) 
+    topics = db.get_tutorialTopics(tutorialid)
+    print(tutorial.educatorID)
+    return render_template('tutorial.html', tutorialid = tutorialid, tutorial = tutorial, ratings = ratings, editcomment = editcomment, topics=topics, db = db) 
 
 @login_required
 def edit_tutorial():
@@ -246,6 +250,7 @@ def add_comment():
 
     return redirect(url_for('tutorial', tutorialid=tutorialid))
 
+@login_required
 def edit_comment():
     ratingid = request.form["ratingid"]
     rating = request.form["rating"]
@@ -256,6 +261,7 @@ def edit_comment():
             flash(f"Rating updated", "is-success")
     return redirect(url_for('tutorial', tutorialid = tutorialid))
 
+@login_required
 def delete_comment():
     ratingid = request.args.get('ratingid')
     tutorialid = request.args.get('tutorialid')

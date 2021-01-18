@@ -1,8 +1,15 @@
 .home-tut{
-    flex-basis: 380px;
+    flex-direction: column;
+    height: 100%;
+    flex-basis: 350px;
 }
 
 .scroll-topics{
     height: 400px;
     overflow: auto;
+}
+
+.boxfooter{
+    margin-top: auto;
+    margin-left: auto;
 }

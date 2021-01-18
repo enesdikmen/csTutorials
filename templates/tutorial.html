@@ -6,47 +6,82 @@
 <div class="columns">
     <div class="column is-8 is-offset-2">
 
+        <div class="container block">
+            <h1 class="title is-4">{{ tutorial.title }}</h1>
 
-        <p>
-            <strong>{{ tutorial.title }}</strong>
-            <br>{{ tutorial.url }}
-            <br>{{ tutorial.platform }}
-            <br>{{ tutorial.skill }} <br>
-            {{tutorial.length}} <br>
-
-            Rating num: {{tutorial.ratingNum }} <br>
-            Rating: {{tutorial.tutorialRating }} <br>
+            <div class="columns ">
 
 
-        </p>
+                <div class="column is-6">
+                    <p><strong>Platform: </strong> {{ tutorial.platform }} </p>
+                    <p><strong>Required Skill:</strong> {{ tutorial.skill }}</p>
+                    <p><strong>Length: </strong>
 
-        {% if current_user.is_authenticated and current_user.is_admin()%}
+                        {% if tutorial.length[0] != 0 %}
+                        {{tutorial.length[0]}} hours
+                        {% endif %}
 
-        <a class="button is-active" href="{{ url_for('edit_tutorial', tutorialid=tutorialid) }}">Edit</a>
-        {% endif %}
+                        {% if tutorial.length[1] != 0 %}
+                        {{tutorial.length[1]}} minutes
+                        {% endif %}
+                    </p>
+                    <p><strong>Educator: </strong><a
+                            href="{{ url_for('educator', educatorName=db.get_educatorname(tutorial.educatorID)) }}">{{
+                        db.get_educatorname(tutorial.educatorID) }}</a></p>
 
 
-        <!-- if user is already enrolled -->
-        {% if current_user.is_authenticated and db.get_enrollment(current_user.id, tutorialid) %}
-        <a class="button is-rounded is-large is-primary" type="button" href="" disabled>Already Enrolled</a>
-        <!-- authenticated but not enrolled -->
-        {% elif current_user.is_authenticated %}
-        <a class="button is-rounded is-large is-primary" type="button"
-            href="{{ url_for('enroll', tutorialid = tutorialid) }}">Enroll</a>
-        {% else %}
-        <a class="button is-rounded is-large is-primary" type="button"
-            href="{{ url_for('login', message='Please login to enroll', next = url_for('tutorial', tutorialid = tutorialid)) }}">Enroll</a>
-        {% endif %}
+                </div>
+                <div class="column is-3">
+                    <p> <strong>Total Ratings:</strong> {{tutorial.ratingNum }}</p>
+                    <p> <strong> Rating:</strong>
+                        {% if tutorial.tutorialRating %}
+                        {{tutorial.tutorialRating }}
+                        {% else %}
+                        No ratings
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="column is-3">
 
+                    <strong> Topics: </strong><br>
+                    {% for topic in topics %}
+                    {{ topic[1] }} <br>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="buttons block">
+            <a href="{{ tutorial.url }}" class="button is-rounded is-info is-large" target="_blank">Go to Tutorial</a>
+            <!-- if user is already enrolled -->
+            {% if current_user.is_authenticated and db.get_enrollment(current_user.id, tutorialid) %}
+            <a class="button is-rounded is-large is-primary" type="button" href="" disabled>Already Enrolled</a>
+            <!-- authenticated but not enrolled -->
+            {% elif current_user.is_authenticated %}
+            <a class="button is-rounded is-large is-primary" type="button"
+                href="{{ url_for('enroll', tutorialid = tutorialid) }}">Enroll</a>
+            {% else %}
+            <a class="button is-rounded is-large is-primary" type="button"
+                href="{{ url_for('login', message='Please login to enroll', next = url_for('tutorial', tutorialid = tutorialid)) }}">Enroll</a>
+            {% endif %}
+
+            {% if current_user.is_authenticated and current_user.is_admin()%}
+
+            <a class="button is-active is-right" href="{{ url_for('edit_tutorial', tutorialid=tutorialid) }}">Edit</a>
+            {% endif %}
+        </div>
         <div class="section block">
             <h2 class="title is-5">Comments</h2>
 
-            {% if current_user.is_authenticated and db.get_enrollment(current_user.id, tutorialid)  %}
+            {% if current_user.is_authenticated and db.get_enrollment(current_user.id, tutorialid) %}
 
-            
+
             <!-- Enrolled user don't have a rating -->
             {% if not db.has_rating(tutorialid, current_user.id) %}
-            <div class="box block">   
+            <div class="box block">
                 <div class="block">
                     <p><strong>{{ current_user.email}}</strong></p>
                 </div>
@@ -114,11 +149,11 @@
                 </div>
             </div>
             {% endfor %}
-            
+
             <!-- Enrolled user have a rating -->
             {% else %}
 
-          
+
             {% for rating in ratings %}
             {% if rating[1] == current_user.id %}
             <!-- Editing the  own comment-->
@@ -143,15 +178,20 @@
                                     <div class="select is-success">
                                         <select name="rating" required="required" value="{{rating[3]}}">
                                             <option value="5" {% if rating[3]==5 %} selected{% endif %}>
-                                                <strong>5</strong></option>
+                                                <strong>5</strong>
+                                            </option>
                                             <option value="4" {% if rating[3]==4 %} selected{% endif %}>
-                                                <strong>4</strong></option>
+                                                <strong>4</strong>
+                                            </option>
                                             <option value="3" {% if rating[3]==3 %} selected{% endif %}>
-                                                <strong>3</strong></option>
+                                                <strong>3</strong>
+                                            </option>
                                             <option value="2" {% if rating[3]==2 %} selected{% endif %}>
-                                                <strong>2</strong></option>
+                                                <strong>2</strong>
+                                            </option>
                                             <option value="1" {% if rating[3]==1 %} selected{% endif %}>
-                                                <strong>1</strong></option>
+                                                <strong>1</strong>
+                                            </option>
 
                                         </select>
                                     </div>
@@ -181,10 +221,10 @@
             </div>
             <!-- Own comment not editing -->
             {% else %}
-        
+
             <div class="box has-background-info-light">
                 <div>
-                <p>{{rating[2]}} <span
+                    <p>{{rating[2]}} <span
                             class="has-text-success is-pulled-right">{{rating[5].strftime("%d-%m-%Y")}}</span></p>
                 </div>
                 <div class="columns">
@@ -210,7 +250,7 @@
             {% for rating in ratings %}
             {% if rating[1] != current_user.id %}
 
-            
+
             <div class="box">
                 <div>
                     <p>{{rating[2]}} <span

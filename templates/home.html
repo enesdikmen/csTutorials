@@ -3,9 +3,11 @@
 {% block title %} Home {% endblock title %}
 
 {% block content %}
+<h1 class="title is-4 has-text-centered">Homepage</h1>
 
 <div class="columns">
     <div class="column is-one-fifth">
+        <h1 class="title is-5">Topics</h1>
 
         <ul>
             {% for topic in topics %}
@@ -16,22 +18,31 @@
     </div>
 
     <div class="column">
-        <h1>Homepage</h1>
         <div class="columns is-multiline">
 
             {% for tutorial in tutorials %}
-            
+
             <div class="column is-one-third is-flex">
-                <a class="is-flex home-tut" href="{{ url_for('tutorial', tutorialid = tutorial[0]) }}">
-                <div class="box home-tut">
-                    <div class="content">
-                        <p>
-                            <strong>{{ tutorial[1].title }}</strong> <small>{{ tutorial[1].skill }}</small> <small>{{ tutorial[1].platform }}</small>
-                            <br>
-                            {{ tutorial[1].info }}
-                        </p>
-                    </div>
-                </div>
+                <a class="is-flex box home-tut" href="{{ url_for('tutorial', tutorialid = tutorial[0]) }}">
+                        <div class="content">
+                                <p><strong>{{ tutorial[1].title }}</strong></p>
+
+                            <p>{{ tutorial[1].skill }}</p>
+                            <p><strong>Length: </strong>
+                                {% if tutorial[1].length[0] != 0 %}
+                                {{tutorial[1].length[0]}} hours
+                                {% endif %}
+
+                                {% if tutorial[1].length[1] != 0 %}
+                                {{tutorial[1].length[1]}} minutes
+                                {% endif %}
+                            </p>
+
+
+                        </div>
+                        <div class="boxfooter">
+                            <span class=" tag is-danger ">{{ tutorial[1].platform }}</span>
+                        </div>
                 </a>
             </div>
             {% endfor %}

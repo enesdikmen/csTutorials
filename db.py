@@ -58,6 +58,15 @@ class Database:
                 rows = cur.fetchall()
         return rows
 
+    def get_tutorialTopics(self, tutorialid): #returns topic ids and names of passed tutorial
+        with connect(self.dbinfo) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""SELECT topic.topicid, topicname FROM topic INNER JOIN tutorialtopic ON
+                 topic.topicid = tutorialtopic.topicid AND tutorialtopic.tutorialid = %s;""", (tutorialid, ))
+                rows = cur.fetchall()
+        return rows
+
+
     #educator table methods
     def add_educator(self, educator):
         with connect(self.dbinfo) as conn:
@@ -76,9 +85,16 @@ class Database:
     def get_educator(self, educatorName):
         with connect(self.dbinfo) as conn:
             with conn.cursor() as cur:
-                cur.execute(f"SELECT*FROM Educator WHERE educatorName='{educatorName}';")
+                cur.execute("SELECT*FROM Educator WHERE educatorName=%s;", (educatorName, ))
                 row = cur.fetchone()
         return Educator(id=row[0], name=row[1], infoURL=row[2]) if row else None
+    
+    def get_educatorname(self, educatorid):
+        with connect(self.dbinfo) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT educatorname FROM Educator WHERE educatorid=%s;", (educatorid, ))
+                row = cur.fetchone()
+        return row[0]
     
     def update_educator(self, educatorID, educatorName, educatorURL):
         with connect(self.dbinfo) as conn:
@@ -267,11 +283,8 @@ class Database:
         old_topics = self.get_topics_of(tutorialid)
         old_topics = [row[0] for row in old_topics]
         topics = [int(i) for i in topics]
-        print("oldsod", old_topics)
-        print("topcs: ",topics)
         #difference between list of old topics and new ones
         diff = list(list(set(old_topics)-set(topics)) + list(set(topics)-set(old_topics))) 
-        print("diff: ", diff)
         for topicid in diff:
             if topicid in old_topics:
                 self.remove_tuttopic(tutorialid, topicid)
