@@ -1,0 +1,140 @@
+{% extends "layout.html" %}
+
+{% block title %} Add Tutorial {% endblock title %}
+
+{% block content %}
+
+<div class="columns">
+    <div class="column is-half is-offset-one-quarter">
+        <h1 class="title">Add New Tutorial</h1>
+        <form action="#" method="POST">
+
+            <div class="field block">
+                <label class=label>Tutorial Title</label>
+                <div class="control">
+                    <input class="input" type="text" required="required" name="tutorialTitle">
+                </div>
+            </div>
+
+
+            <div class="field-body block">
+
+
+                <div class="field">
+                    <label class="label">Topic</label>
+                    <div class="control">
+                        <div class="select">
+                            <select name="tutorialTopic" required="required">
+                                {% for topic in topics %}
+                                <option value="{{topic[0]}}">{{ topic[1] }}</option>
+
+
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Required Skill</label>
+                    <div class="control">
+                        <div class="select">
+                            <select name="tutorialSkill" required="required">
+                                <option value="Beginner">Beginner</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Experienced">Experienced</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Platform</label>
+                    <div class="control">
+                        <div class="select">
+                            <select name="tutorialPlatform" required="required">
+                                <option value="Youtube">Youtube</option>
+                                <option value="Coursera">Coursera</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="field-body block">
+
+                <div class="field">
+                    <label class="label">Length</label>
+                    <div class="field is-grouped is-grouped-left">
+
+                        <div class="field has-addons">
+
+                            <div class="control">
+                                <input class="input" name="hours" required="required" type="number" max="200" placeholder="2" min="0" max="100">
+                            </div>
+                            <p class="control">
+                                <a class="button is-static">
+                                    hours
+                                </a>
+                            </p>
+                        </div>
+
+                        <div class="field has-addons">
+                            <p class="control">
+                                <input class="input" name="minutes" required="required" type="number" placeholder="20" max="60" min="0">
+                            </p>
+                            <p class="control">
+                                <a class="button is-static">
+                                    minutes
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="field">
+                    <label class="label">Educator</label>
+                    <div class="control">
+                        <div class="select">
+                            <select name="educatorID" required="required">
+                                {% for educator in educators %}
+                                <option value="{{educator[0]}}">{{ educator[1] }}</option>
+
+
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <a class="button is-info" style="margin-top: auto;" href="{{url_for('add_educator', next='add_tutorial')}}">Add New Educator</a>
+
+
+            </div>
+            <div class="field block">
+                <label class="label">Tutorial URL</label>
+                <div class="control">
+                    <input class="input" type="text" name="tutorialURL">
+                </div>
+            </div>
+
+            <div class="field block">
+                <label class="label">Information</label>
+
+                <div class="control">
+                  <textarea class="textarea" name="tutorialInfo" placeholder="Some info about the tutorial"></textarea>
+                </div>
+              </div>
+
+            <div class="field">
+                <div class="control">
+                    <button class="button is-primary is-small">Save</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+{% endblock content %}

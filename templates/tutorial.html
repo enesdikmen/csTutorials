@@ -1,0 +1,273 @@
+{% extends "layout.html" %}
+
+{% block title %} Tutorial {% endblock title %}
+
+{% block content %}
+<div class="columns">
+    <div class="column is-8 is-offset-2">
+
+
+        <p>
+            <strong>{{ tutorial.title }}</strong>
+            <br>{{ tutorial.url }}
+            <br>{{ tutorial.platform }}
+            <br>{{ tutorial.skill }} <br>
+            {{tutorial.length}} <br>
+
+            Rating num: {{tutorial.ratingNum }} <br>
+            Rating: {{tutorial.tutorialRating }} <br>
+
+
+        </p>
+
+        {% if current_user.is_authenticated and current_user.is_admin()%}
+
+        <a class="button is-active" href="{{ url_for('edit_tutorial', tutorialid=tutorialid) }}">Edit</a>
+        {% endif %}
+
+
+        <!-- if user is already enrolled -->
+        {% if current_user.is_authenticated and db.get_enrollment(current_user.id, tutorialid) %}
+        <a class="button is-rounded is-large is-primary" type="button" href="" disabled>Already Enrolled</a>
+        <!-- authenticated but not enrolled -->
+        {% elif current_user.is_authenticated %}
+        <a class="button is-rounded is-large is-primary" type="button"
+            href="{{ url_for('enroll', tutorialid = tutorialid) }}">Enroll</a>
+        {% else %}
+        <a class="button is-rounded is-large is-primary" type="button"
+            href="{{ url_for('login', message='Please login to enroll', next = url_for('tutorial', tutorialid = tutorialid)) }}">Enroll</a>
+        {% endif %}
+
+        <div class="section block">
+            <h2 class="title is-5">Comments</h2>
+
+            {% if current_user.is_authenticated and db.get_enrollment(current_user.id, tutorialid)  %}
+
+            
+            <!-- Enrolled user don't have a rating -->
+            {% if not db.has_rating(tutorialid, current_user.id) %}
+            <div class="box block">   
+                <div class="block">
+                    <p><strong>{{ current_user.email}}</strong></p>
+                </div>
+
+                <form action="{{url_for('add_comment')}}" method="POST">
+
+                    <input type="hidden" name="userid" value="{{current_user.id}}">
+                    <input type="hidden" name="tutorialid" value="{{tutorialid}}">
+
+
+                    <div class="columns">
+                        <div class="column is-2">
+                            <div class="field">
+                                <label class="label">Your Rating</label>
+                                <div class="control">
+                                    <div class="select is-success">
+                                        <select name="rating" required="required">
+                                            <option value="5"><strong>5</strong></option>
+                                            <option value="4"><strong>4</strong></option>
+                                            <option value="3"><strong>3</strong></option>
+                                            <option value="2"><strong>2</strong></option>
+                                            <option value="1"><strong>1</strong></option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="column">
+                            <div class="field">
+                                <div class="control">
+                                    <textarea class="textarea is-success" name="comment"
+                                        placeholder="Your comment about the tutorial..."></textarea>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="field is-grouped is-grouped-right">
+                        <div class="control">
+                            <button class="button is-primary">Rate/Comment</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            {% for rating in ratings %}
+            <div class="box">
+                <div>
+                    <p>{{rating[2]}} <span
+                            class="has-text-success is-pulled-right">{{rating[5].strftime("%d-%m-%Y")}}</span></p>
+                </div>
+                <div class="columns">
+                    <div class="column is-2">
+                        <p>Rating: <strong>{{rating[3]}}</strong></p>
+                    </div>
+
+                    <div class="column is-10">
+                        <p>{% if rating[4] %} {{rating[4]}} {% endif %}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            
+            <!-- Enrolled user have a rating -->
+            {% else %}
+
+          
+            {% for rating in ratings %}
+            {% if rating[1] == current_user.id %}
+            <!-- Editing the  own comment-->
+            {% if editcomment %}
+            <div class="box block">
+                <div class="block">
+                    <p><strong>{{ current_user.email}}</strong></p>
+                </div>
+
+                <form action="{{url_for('edit_comment')}}" method="POST">
+
+                    <input type="hidden" name="ratingid" value="{{rating[0]}}">
+                    <input type="hidden" name="tutorialid" value="{{tutorialid}}">
+
+
+
+                    <div class="columns">
+                        <div class="column is-2">
+                            <div class="field">
+                                <label class="label">Your Rating</label>
+                                <div class="control">
+                                    <div class="select is-success">
+                                        <select name="rating" required="required" value="{{rating[3]}}">
+                                            <option value="5" {% if rating[3]==5 %} selected{% endif %}>
+                                                <strong>5</strong></option>
+                                            <option value="4" {% if rating[3]==4 %} selected{% endif %}>
+                                                <strong>4</strong></option>
+                                            <option value="3" {% if rating[3]==3 %} selected{% endif %}>
+                                                <strong>3</strong></option>
+                                            <option value="2" {% if rating[3]==2 %} selected{% endif %}>
+                                                <strong>2</strong></option>
+                                            <option value="1" {% if rating[3]==1 %} selected{% endif %}>
+                                                <strong>1</strong></option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="column">
+                            <div class="field">
+                                <div class="control">
+                                    <textarea class="textarea is-success" name="comment"
+                                        placeholder="Your comment about the tutorial...">{% if rating[4] %} {{rating[4]}} {% endif %}</textarea>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="field is-grouped is-grouped-right">
+                        <div class="control">
+                            <button class="button is-primary">Save</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <!-- Own comment not editing -->
+            {% else %}
+        
+            <div class="box has-background-info-light">
+                <div>
+                <p>{{rating[2]}} <span
+                            class="has-text-success is-pulled-right">{{rating[5].strftime("%d-%m-%Y")}}</span></p>
+                </div>
+                <div class="columns">
+                    <div class="column is-2">
+                        <p>Rating: <strong>{{rating[3]}}</strong></p>
+                    </div>
+
+                    <div class="column is-10">
+                        <p>{% if rating[4] %} {{rating[4]}} {% endif %}</p>
+                    </div>
+                </div>
+                <a href="{{ url_for('tutorial', tutorialid = tutorialid, editcomment = True)}}"
+                    class="button is-warning">Edit</a>
+
+                <a href="{{ url_for('delete_comment', tutorialid = tutorialid, ratingid = rating[0])}}"
+                    class="button is-danger">Delete</a>
+            </div>
+            {% endif %}
+            {% endif %}
+
+            {% endfor %}
+
+            {% for rating in ratings %}
+            {% if rating[1] != current_user.id %}
+
+            
+            <div class="box">
+                <div>
+                    <p>{{rating[2]}} <span
+                            class="has-text-success is-pulled-right">{{rating[5].strftime("%d-%m-%Y")}}</span></p>
+                </div>
+                <div class="columns">
+                    <div class="column is-2">
+                        <p>Rating: <strong>{{rating[3]}}</strong></p>
+                    </div>
+
+                    <div class="column is-10">
+                        <p>{% if rating[4] %} {{rating[4]}} {% endif %}</p>
+                    </div>
+                </div>
+                {% if current_user.is_authenticated and current_user.is_admin() %}
+                <a href="{{ url_for('delete_comment', tutorialid = tutorialid, ratingid = rating[0])}}"
+                    class="button is-danger">Delete</a>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% endfor %}
+
+            {% endif %}
+
+
+            <!-- User is anonymous or not enrolled -->
+
+            {% else %}
+            {% for rating in ratings %}
+            <div class="box">
+                <div>
+                    <p>{{rating[2]}} <span
+                            class="has-text-success is-pulled-right">{{rating[5].strftime("%d-%m-%Y")}}</span></p>
+                </div>
+                <div class="columns">
+                    <div class="column is-2">
+                        <p>Rating: <strong>{{rating[3]}}</strong></p>
+                    </div>
+
+                    <div class="column is-10">
+                        <p>{% if rating[4] %} {{rating[4]}} {% endif %}</p>
+                    </div>
+                </div>
+                {% if current_user.is_authenticated and current_user.is_admin() %}
+                <a href="{{ url_for('delete_comment', tutorialid = tutorialid, ratingid = rating[0])}}"
+                    class="button is-danger">Delete</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            {% endif %}
+
+
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

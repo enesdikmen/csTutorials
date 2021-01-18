@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block title %} Edit Educator {% endblock title %}
+
+{% block content %}
+    <div class="columns">
+        <div class="column">
+            <form action="#" method="POST">
+                <div class="field">
+                    <label class=label>Educator Name</label>
+                    <div class="control">
+                        <input class="input" type="text" required="required" name="educatorName">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class=label>Educator URL</label>
+                    <div class="control">
+                        <input class="input" type="text" required="required" name="educatorURL">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <button class="button is-primary is-small">Add</button>
+                    </div>
+                </div>
+            </form>
+
+            
+                <table class="table is-striped is-fullwidth">
+                    {% for educator in educators %}
+                    <tr>
+                        <td>
+                            
+                            <span><a href="{{ url_for('educator', educatorName=educator[1]) }}">{{educator[1]}}</a></span>    
+                                
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                
+           
+
+
+        </div>
+
+    </div>
+{% endblock content %}

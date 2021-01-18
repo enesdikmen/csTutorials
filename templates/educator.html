@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block title %} Educator {% endblock title %}
+
+{% block content %}
+
+<!-- when editing an educator -->
+{% if current_user.is_authenticated and current_user.is_admin() and edit %}
+<form action="/edit_educator" method="POST">
+    <div class="field">
+        <label class=label>Educator Name</label>
+        <div class="control">
+            <input class="input" type="text" required="required" name="educatorName" value="{{ educator.name }}">
+        </div>
+    </div>
+    <div class="field">
+        <label class=label>Educator URL</label>
+        <div class="control">
+            <input class="input" type="text" required="required" name="educatorURL" value="{{ educator.infoURL }}">
+        </div>
+    </div>
+    <input type="hidden" name="educatorID" value={{educator.id}} />
+
+    <div class="field">
+        <div class="control">
+            <button class="button is-primary is-small">Save</button>
+        </div>
+        
+    </div>
+</form>
+{% else %}
+
+<table class="table is-striped is-fullwidth">
+
+    <tr>
+        <td>
+            
+            <span>{{educator.name}}</span>    
+                
+        </td>
+        <td>
+            <span><a href="{{educator.infoURL}}" target="_blank ">{{ educator.infoURL }}</a></span>
+        </td>
+    </tr>
+    
+</table>
+
+{% endif %}
+{% if current_user.is_authenticated and current_user.is_admin() and not edit %}
+
+<a class="button" href="{{ url_for('educator', educatorName=educator.name, edit=True) }}">Edit</a>
+<a class="button is-danger" href="{{ url_for('delete_educator', educatorID=educator.id, educatorName=educator.name) }}">Delete</a>
+
+{% endif %}
+{% endblock content %}

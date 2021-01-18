@@ -1,0 +1,8 @@
+.home-tut{
+    flex-basis: 380px;
+}
+
+.scroll-topics{
+    height: 400px;
+    overflow: auto;
+}

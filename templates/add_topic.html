@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+
+{% block title %} Home {% endblock title %}
+
+{% block content %}
+
+{% if topicName %}
+<h3>Topic Added</h3>
+<p>{{ topicName }}</p>
+
+{% else %}
+<div class="columns">
+    <div class="column is-half is-offset-one-quarter">
+     
+<h1>Add Topic</h1>
+<form action="#" method="POST">
+    <div class="field">
+        <label class=label>Topic Name</label>
+        <div class="control">
+            <input class="input" type="text" required="required" name="topicName">
+        </div>
+    </div>
+    <div class="field">
+        <div class="control">
+            <button class="button is-primary is-small">Add</button>
+        </div>
+    </div>
+</form>
+
+<div class="colums">
+    <div class="column is-half">
+
+    
+<!-- When admin is editing a topics name -->
+{% if to_edit %}
+<div class="scroll-topics">
+
+<table class="table is-striped is-fullwidth">
+    {% for topic in topics %}
+    <tr>
+        <td>
+            <form action="{{ url_for('edit_topic') }}" method="POST">
+
+                <div class="field is-horizontal">
+                    <label class="checkbox" disabled>
+                        <input type="checkbox" name="topics_check" value="{{topic}}" disabled>
+
+                    </label>
+                    {% if topic[1] == to_edit %}
+
+                    <div class="field">
+                        <div class="control">
+                            <input class="input" type="text" required="required" name="topicName"
+                                value="{{ topic[1] }}">
+                        </div>
+                    </div>
+
+                    <!-- hidden input to send topic id with the post request -->
+                    <input type="hidden" name="topicID" value={{topic[0]}} />
+
+                    <div class="field">
+                        <div class="control">
+                            <button class="button is-primary is-small" type="submit">Save</button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+
+
+            {% else %}
+            <span>{{topic[1]}}</span>
+            {% endif %}
+
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+
+<div class="field">
+    <div class="control">
+        <button class="button is-danger is-small" type="submit" disabled>Delete</button>
+    </div>
+</div>
+<!-- Topics are displayed for deletion -->
+{% else %}
+<form action="{{ url_for('delete_topic') }}" method="POST" disabled>
+
+    <div class="scroll-topics">
+
+    <table class="table is-striped is-fullwidth">
+        {% for topic in topics %}
+        <tr>
+            <td>
+                <label class="checkbox">
+                    <input type="checkbox" name="topics_check" value="{{topic[1]}}">
+                </label>
+
+                <span>{{topic[1]}}</span>
+                <a class="button is-small" href="{{ url_for('add_topic', to_edit=topic[1]) }}">Edit</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+    <div class="field">
+        <div class="control">
+            <button class="button is-danger is-small" type="submit">Delete</button>
+        </div>
+    </div>
+    {% endif %}
+</form>
+</div>
+</div>
+</div>
+</div>
+{% endif %}
+{% endblock content %}

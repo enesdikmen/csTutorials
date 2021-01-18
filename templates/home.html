@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block title %} Home {% endblock title %}
+
+{% block content %}
+
+<div class="columns">
+    <div class="column is-one-fifth">
+
+        <ul>
+            {% for topic in topics %}
+            <li>{{topic[0]}}</li>
+
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="column">
+        <h1>Homepage</h1>
+        <div class="columns is-multiline">
+
+            {% for tutorial in tutorials %}
+            
+            <div class="column is-one-third is-flex">
+                <a class="is-flex home-tut" href="{{ url_for('tutorial', tutorialid = tutorial[0]) }}">
+                <div class="box home-tut">
+                    <div class="content">
+                        <p>
+                            <strong>{{ tutorial[1].title }}</strong> <small>{{ tutorial[1].skill }}</small> <small>{{ tutorial[1].platform }}</small>
+                            <br>
+                            {{ tutorial[1].info }}
+                        </p>
+                    </div>
+                </div>
+                </a>
+            </div>
+            {% endfor %}
+
+
+
+
+
+        </div>
+
+
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block title %} Account {% endblock title %}
+
+
+{% block content %}
+
+<div class="columns">
+  <div class="column is-one-fifth has-background-grey-lighter">
+
+    {% if current_user.is_admin() %}
+    <aside class="menu">
+      <p class="menu-label">
+        Admin Tools
+      </p>
+      <ul class="menu-list">
+        <li><a href="{{ url_for('add_topic') }}">Add-Remove Topics</a></li>
+        <li><a href="{{ url_for('add_tutorial') }}">Add-Remove Tutorial</a></li>
+        <li><a href="{{ url_for('add_educator') }}">Add-Remove Educators</a></li>
+        <li><a href="{{ url_for('add_educator') }}">Control Enrollments</a></li>
+
+
+      </ul>
+
+
+      {% endif %}
+  </div>
+  <div class="column">
+    <h1>User email:{{ current_user.email}}</h1>
+
+
+  </div>
+</div>
+<table class="table is-bordered is-hoverable">
+{% if enrollments %}
+  <tr>
+    <th>Title</th>
+    <th>Platform</th>
+    <th>Educator</th>
+    <th>Enrolled At</th>
+    <th>Status</th>
+    <th></th>
+
+  </tr>
+  {% for enrollment in enrollments %}
+
+  <tr>
+    <td><a href="{{ url_for('tutorial', tutorialid = enrollment[6]) }}">{{ enrollment[1] }}</a></td>
+    <td>{{ enrollment[2] }}</td>
+    <td>{{ enrollment[3] }}</td>
+    <td>{{ enrollment[4].strftime("%d-%m-%Y") }}</td>
+    <td>{{ enrollment[5] }}</td>
+    <td> <a class="button is-danger is-small" href="{{ url_for('remove_enrollment', enrollmentid=enrollment[0], title=enrollment[1]) }}">Drop</a> </td>
+  </tr>
+  {% endfor %}
+
+</table>
+{% endif %}
+
+
+
+{% endblock content %}
