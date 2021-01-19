@@ -104,6 +104,25 @@ def tutorial():
     print(tutorial.educatorID)
     return render_template('tutorial.html', tutorialid = tutorialid, tutorial = tutorial, ratings = ratings, editcomment = editcomment, topics=topics, db = db) 
 
+def tutorials():
+    if request.method == "GET":
+        topics = db.get_topics()
+    
+        tutorials = db.get_tutorials()
+        
+        return render_template('tutorials.html', topics = topics, tutorials = tutorials)
+    else:
+        topics = db.get_topics()
+
+        skill = request.form["skill"]
+        platform = request.form["platform"]
+        sortby = request.form["sortby"]
+
+        tutorials =db.get_tutorials_filtered(sortby, skill, platform)
+        return render_template('tutorials.html', topics = topics, tutorials = tutorials, skill = skill, platform = platform, sortby = sortby)
+
+    
+
 @login_required
 def edit_tutorial():
     if request.method == 'POST':

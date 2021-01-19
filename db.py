@@ -202,6 +202,41 @@ class Database:
         for row in rows:
             tutorials.append((row[0], Tutorial(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])))
         return tutorials
+    
+    def get_tutorials_filtered(self, sorting=None, skill=None, platform=None):
+        
+        if sorting == "ratingdec":
+            sortq = " ORDER BY tutorialrating DESC NULLS LAST;"
+        elif sorting == "ratinginc":
+            sortq = " ORDER BY tutorialrating ASC NULLS LAST;"
+        elif sorting == "lengthinc":
+            sortq = " ORDER BY length ASC;"
+        elif sorting == "lengthdec":
+            sortq = " ORDER BY length DESC;"
+        else:
+            sortq = ";"
+
+
+        if skill != "Any" or platform != "Any":
+            if skill != "Any" and platform == "Any":
+                whereq = " WHERE skill = " + "'" + skill + "'"
+            elif skill == "Any" and platform != "Any":
+                whereq = " WHERE platform = " + "'" + platform + "'"
+            else:
+                whereq = " WHERE platform = " + "'" + platform + "'" + " AND skill = " + "'" +skill + "'" 
+
+        else:
+            whereq = ""        
+        tutorials = []
+        with connect(self.dbinfo) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT*FROM tutorial "+whereq+sortq)
+                rows = cur.fetchall()
+
+        for row in rows:
+            tutorials.append((row[0], Tutorial(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])))
+        return tutorials
+
 
     def update_tutorial(self, tutorialID, tutorial):
         with connect(self.dbinfo) as conn:  

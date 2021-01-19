@@ -24,25 +24,34 @@
 
             <div class="column is-one-third is-flex">
                 <a class="is-flex box home-tut" href="{{ url_for('tutorial', tutorialid = tutorial[0]) }}">
-                        <div class="content">
-                                <p><strong>{{ tutorial[1].title }}</strong></p>
+                    <div class="content">
+                        <p><strong>{{ tutorial[1].title }}</strong></p>
 
-                            <p>{{ tutorial[1].skill }}</p>
-                            <p><strong>Length: </strong>
-                                {% if tutorial[1].length[0] != 0 %}
-                                {{tutorial[1].length[0]}} hours
-                                {% endif %}
+                        <p>{{ tutorial[1].skill }}</p>
+                        <p><strong>Length: </strong>
+                            {% if tutorial[1].length[0] != 0 %}
+                            {{tutorial[1].length[0]}} hours
+                            {% endif %}
 
-                                {% if tutorial[1].length[1] != 0 %}
-                                {{tutorial[1].length[1]}} minutes
-                                {% endif %}
-                            </p>
+                            {% if tutorial[1].length[1] != 0 %}
+                            {{tutorial[1].length[1]}} minutes
+                            {% endif %}
+                        </p>
 
 
-                        </div>
-                        <div class="boxfooter">
-                            <span class=" tag is-danger ">{{ tutorial[1].platform }}</span>
-                        </div>
+                    </div>
+                    <div class="boxfooter">
+                        
+                        <span class="tag is-info is-light">
+                            <span class="icon has-text-warning">
+                                <i class="fas fa-star"></i>
+                            </span>
+                            {% if tutorial[1].tutorialRating %} {{ tutorial[1].tutorialRating }} {% else %} - {% endif
+                            %}
+                        </span>
+                        <span class=" tag is-danger ">{{ tutorial[1].platform }}</span>
+                    
+                    </div>
                 </a>
             </div>
             {% endfor %}

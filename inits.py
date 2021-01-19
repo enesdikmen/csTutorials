@@ -17,6 +17,7 @@ app.add_url_rule("/logout", view_func=view.logout)
 
 app.add_url_rule("/add_tutorial", view_func=view.add_tutorial, methods=['GET', 'POST'])
 app.add_url_rule("/tutorial", view_func=view.tutorial)
+app.add_url_rule("/tutorials", view_func=view.tutorials, methods=['GET', 'POST'])
 app.add_url_rule("/edit_tutorial", view_func=view.edit_tutorial, methods=['GET', 'POST'])
 
 app.add_url_rule("/add_topic", view_func=view.add_topic, methods=['GET', 'POST'])
