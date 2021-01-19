@@ -7,8 +7,7 @@ from passlib.hash import pbkdf2_sha256 as hasher
 class Database:
     def __init__(self, dbinfo):
         self.dbinfo = dbinfo
-        # self.conn = connect("dbname=postgres user=postgres password=12345 host=localhost")
-        # self.cur = self.conn.cursor()
+        
     
     #topic table methods
     def add_topic(self, topic):
@@ -29,6 +28,7 @@ class Database:
                 conn.commit()
                 rowcount = cur.rowcount    
         return rowcount
+
     def delete_topic(self, topicName):
         with connect(self.dbinfo) as conn:
             with conn.cursor() as cur:
@@ -134,6 +134,41 @@ class Database:
                 conn.commit()
                 rowcount = cur.rowcount
         return rowcount
+
+    def refresh_educatorrating(self, educatorid):
+        with connect(self.dbinfo) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT tutorialrating FROM tutorial WHERE tutorialrating IS NOT NULL AND educatorid = %s;", (educatorid, ))
+                ratings = cur.fetchall()
+                tutorialnum = len(ratings)
+
+        if tutorialnum == 0:
+            
+            with connect(self.dbinfo) as conn:  
+                with conn.cursor() as cur:
+                    cur.execute("UPDATE educator SET avgrating=%s, tutorialnum = 0 WHERE educatorid=%s;", (None, educatorid))
+                    rowcount = conn.commit()
+            return rowcount
+        else:
+            total = 0
+            for rating in ratings:
+                total += rating[0]
+            avgrating = round(total/tutorialnum, 2)    
+            with connect(self.dbinfo) as conn:  
+                with conn.cursor() as cur:
+                    cur.execute("UPDATE educator SET avgrating=%s, tutorialnum = %s WHERE educatorid=%s;", (avgrating, tutorialnum, educatorid))
+                    rowcount = conn.commit()
+            return rowcount
+
+    def refresh_alleducatorrating(self):
+        with connect(self.dbinfo) as conn:  
+                with conn.cursor() as cur:
+                    cur.execute("SELECT educatorid FROM educator")
+                    educatorids = cur.fetchall()
+        for educatorid in educatorids:
+            self.refresh_educatorrating(educatorid[0])        
+
+
     #userAcc table methods
     def validate_signup(self, Email, password):
         with connect(self.dbinfo) as conn:
@@ -276,6 +311,7 @@ class Database:
                 cur.execute("DELETE FROM Tutorial WHERE tutorialid=%s;", (tutorialID, ))
                 conn.commit()
                 rowcount = cur.rowcount
+        self.refresh_allenrolmentnum()
         return rowcount
 
     def get_tutorialPoints(self, tutorialid):
@@ -292,7 +328,7 @@ class Database:
         if ratingnum == 0:
             with connect(self.dbinfo) as conn:  
                 with conn.cursor() as cur:
-                    cur.execute("UPDATE tutorial SET tutorialrating=%s WHERE tutorialid=%s;", (None, tutorialid))
+                    cur.execute("UPDATE tutorial SET tutorialrating=%s, ratingnum=0 WHERE tutorialid=%s;", (None, tutorialid))
                     rowcount = conn.commit()
             return rowcount
         
@@ -369,7 +405,35 @@ class Database:
                 cur.execute("INSERT INTO enrollment(userid, tutorialid, status) VALUES (%s, %s, %s);", (userid, tutorialid, status))
                 conn.commit()
                 rowcount = cur.rowcount
+        self.refresh_enrollmentnum(userid)
         return rowcount
+   
+
+    def get_enrollmentnum(self, userid):
+        with connect(self.dbinfo) as conn:  
+            with conn.cursor() as cur:
+                cur.execute("SELECT tutorialid FROM enrollment WHERE userid=%s;", (userid, ))
+                row = cur.fetchall()
+        return len(row)
+
+    def refresh_allenrolmentnum(self):
+        with connect(self.dbinfo) as conn:  
+            with conn.cursor() as cur:
+                cur.execute("SELECT userid FROM useracc")
+                userids = cur.fetchall()
+                for userid in userids:
+                    self.refresh_enrollmentnum(userid)
+
+    
+    def refresh_enrollmentnum(self, userid):
+        num = self.get_enrollmentnum(userid)
+        with connect(self.dbinfo) as conn:  
+            with conn.cursor() as cur:
+                cur.execute("UPDATE useracc SET enrollmentnum = %s WHERE userid=%s;", (num, userid))
+                conn.commit()
+                rowcount = cur.rowcount
+        return rowcount
+
 
     def get_enrollment(self, userid, tutorialid):#make this with join
         with connect(self.dbinfo) as conn:  
@@ -395,6 +459,7 @@ class Database:
                 cur.execute("DELETE FROM enrollment WHERE enrollmentid = %s;", (enrollmentid, ))
                 conn.commit()
                 rowcount = cur.rowcount
+        
         return rowcount
 
 #rating comment table methods
@@ -402,6 +467,7 @@ class Database:
     def add_rating(self, userid, tutorialid, rating, comment = None):
         with connect(self.dbinfo) as conn:  
             with conn.cursor() as cur:
+                print(userid)
                 cur.execute("INSERT INTO ratingcomment(userid, tutorialid, rating, comment) VALUES (%s, %s, %s, %s);", (userid, tutorialid, rating, comment))
                 conn.commit()
                 rowcount = cur.rowcount

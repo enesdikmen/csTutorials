@@ -91,6 +91,8 @@
 
                     <input type="hidden" name="userid" value="{{current_user.id}}">
                     <input type="hidden" name="tutorialid" value="{{tutorialid}}">
+                    <input type="hidden" name="educatorid" value="{{tutorial.educatorID}}">
+
 
 
                     <div class="columns">
@@ -168,6 +170,8 @@
 
                     <input type="hidden" name="ratingid" value="{{rating[0]}}">
                     <input type="hidden" name="tutorialid" value="{{tutorialid}}">
+                    <input type="hidden" name="educatorid" value="{{tutorial.educatorID}}">
+
 
 
 
@@ -240,7 +244,7 @@
                 <a href="{{ url_for('tutorial', tutorialid = tutorialid, editcomment = True)}}"
                     class="button is-warning">Edit</a>
 
-                <a href="{{ url_for('delete_comment', tutorialid = tutorialid, ratingid = rating[0])}}"
+                <a href="{{ url_for('delete_comment', tutorialid = tutorialid, ratingid = rating[0], educatorid = tutorial.educatorID)}}"
                     class="button is-danger">Delete</a>
             </div>
             {% endif %}

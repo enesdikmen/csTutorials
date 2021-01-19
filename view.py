@@ -61,8 +61,11 @@ def logout():
 @login_required
 def account():        
     enrollments = db.get_enrollments_of(current_user.id)
-    print(enrollments)
     return render_template('account.html', enrollments = enrollments, db=db)
+
+@login_required
+def admin_tutorial():
+    return render_template('admin_tutorial.html')
 
 @login_required
 def add_tutorial():
@@ -96,6 +99,7 @@ def add_tutorial():
 def delete_tutorial():
     tutorialid = request.args.get('tutorialid')
     if db.remove_tutorial(tutorialid):
+        db.refresh_alleducatorrating()
         flash(f"Tutorial deleted", "is-success")
 
 
@@ -109,7 +113,6 @@ def tutorial():
     editcomment = request.args.get('editcomment')
     tutorial = db.get_tutorial(tutorialid)
     topics = db.get_tutorialTopics(tutorialid)
-    print(tutorial.educatorID)
     return render_template('tutorial.html', tutorialid = tutorialid, tutorial = tutorial, ratings = ratings, editcomment = editcomment, topics=topics, db = db) 
 
 def tutorials():
@@ -229,7 +232,6 @@ def edit_educator():
     educatorName = request.form["educatorName"]
     educatorURL = request.form["educatorURL"]
     educatorID = request.form["educatorID"]
-    print(educatorID)
 
     if db.update_educator(educatorID, educatorName, educatorURL):
             flash(f"Educator '{educatorName}' edited", "is-success")
@@ -246,7 +248,6 @@ def educator():
 def enroll():
     tutorialid = request.args.get('tutorialid')
     if current_user.is_authenticated:
-        print("user: ", current_user.id, "tut: ", tutorialid)
         if db.add_enrollment(current_user.id, tutorialid):
             flash(f"Enrolled", "is-success")
             
@@ -255,12 +256,13 @@ def enroll():
 @login_required
 def remove_enrollment():
     enrollmentid = request.args.get('enrollmentid')
+    userid = request.args.get('userid')
     title = request.args.get('tite')
 
     if enrollmentid:
-        print(enrollmentid)
         
         if db.remove_enrollment(enrollmentid):
+            db.refresh_enrollmentnum(userid)
             flash(f"Tutorial {title} is dropped.", "is-success")
 
 
@@ -268,15 +270,16 @@ def remove_enrollment():
 
 @login_required
 def add_comment():
+
     userid = request.form["userid"]
     tutorialid = request.form["tutorialid"]
+    educatorid = request.form["educatorid"]
     rating = request.form["rating"]
     comment = request.form["comment"]
-    print(userid, tutorialid, rating, comment)
     if db.add_rating(userid, tutorialid, rating, comment):
         db.refresh_tutorialRating(tutorialid)
+        db.refresh_educatorrating(educatorid)
         flash(f"Rating saved", "is-success")
-
 
     return redirect(url_for('tutorial', tutorialid=tutorialid))
 
@@ -286,8 +289,11 @@ def edit_comment():
     rating = request.form["rating"]
     comment = request.form["comment"]
     tutorialid = request.form["tutorialid"]
+    educatorid = request.form["educatorid"]
+    
     if db.update_rating(ratingid, rating, comment):
             db.refresh_tutorialRating(tutorialid)
+            db.refresh_educatorrating(educatorid)
             flash(f"Rating updated", "is-success")
     return redirect(url_for('tutorial', tutorialid = tutorialid))
 
@@ -295,9 +301,12 @@ def edit_comment():
 def delete_comment():
     ratingid = request.args.get('ratingid')
     tutorialid = request.args.get('tutorialid')
-    
+    educatorid = request.args.get('educatorid')
+    print(educatorid)
     if db.delete_comment(ratingid):
             db.refresh_tutorialRating(tutorialid)
+
+            db.refresh_educatorrating(educatorid)
             flash(f"Rating deleted", "is-success")
     return redirect(url_for('tutorial', tutorialid = tutorialid))
     

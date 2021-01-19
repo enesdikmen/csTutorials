@@ -15,6 +15,9 @@ app.add_url_rule("/sign_up", view_func=view.sign_up, methods=['GET', 'POST'])
 app.add_url_rule("/login", view_func=view.login, methods=['GET', 'POST'])
 app.add_url_rule("/logout", view_func=view.logout)
 
+app.add_url_rule("/admin_tutorial", view_func=view.admin_tutorial, methods=['GET'])
+
+
 app.add_url_rule("/add_tutorial", view_func=view.add_tutorial, methods=['GET', 'POST'])
 app.add_url_rule("/tutorial", view_func=view.tutorial)
 app.add_url_rule("/tutorials", view_func=view.tutorials, methods=['GET', 'POST'])

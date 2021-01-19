@@ -15,7 +15,7 @@
       </p>
       <ul class="menu-list">
         <li><a href="{{ url_for('add_topic') }}">Add-Remove Topics</a></li>
-        <li><a href="{{ url_for('add_tutorial') }}">Add-Remove Tutorial</a></li>
+        <li><a href="{{ url_for('admin_tutorial') }}">Add-Remove Tutorial</a></li>
         <li><a href="{{ url_for('add_educator') }}">Add-Remove Educators</a></li>
         <li><a href="{{ url_for('add_educator') }}">Control Enrollments</a></li>
 
@@ -50,7 +50,7 @@
     <td>{{ enrollment[3] }}</td>
     <td>{{ enrollment[4].strftime("%d-%m-%Y") }}</td>
     <td>{{ enrollment[5] }}</td>
-    <td> <a class="button is-danger is-small" href="{{ url_for('remove_enrollment', enrollmentid=enrollment[0], title=enrollment[1]) }}">Drop</a> </td>
+    <td> <a class="button is-danger is-small" href="{{ url_for('remove_enrollment', enrollmentid=enrollment[0], title=enrollment[1], userid = current_user.id) }}">Drop</a> </td>
   </tr>
   {% endfor %}
 

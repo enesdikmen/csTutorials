@@ -15,7 +15,9 @@ def init_table():
             EducatorID SERIAL,
             EducatorName VARCHAR(50) NOT NULL,
             InfoURL VARCHAR(255),
+            tutorialnum INT DEFAULT 0,
             AvgRating FLOAT8,
+            createdat TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY(EducatorID)
             );"""
             cur.execute(querry)
@@ -46,6 +48,7 @@ def init_table():
             Password VARCHAR(255) NOT NULL,
             isAdmin BOOL NOT NULL DEFAULT false,
             CreatedAt TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+            enrollmentnum INT DEFAULT 0,
             PRIMARY KEY (UserID)
             );
             """
