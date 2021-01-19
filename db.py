@@ -204,7 +204,7 @@ class Database:
                     row = cur.fetchone()
 
                     conn.commit()
-            return row
+            return row[0]
         else:
             return False
 

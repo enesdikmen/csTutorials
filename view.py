@@ -8,6 +8,7 @@ from tables import Topic, Educator, Tutorial
 
 
 def main():
+
     tutorials = db.get_tutorials()
     rows = db.get_topic_names()
     
@@ -265,6 +266,7 @@ def remove_enrollment():
 @login_required
 def add_comment():
     userid = request.form["userid"]
+
     tutorialid = request.form["tutorialid"]
     educatorid = request.form["educatorid"]
     rating = request.form["rating"]

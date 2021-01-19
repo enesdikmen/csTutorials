@@ -57,4 +57,5 @@ login_manager.login_message_category = 'is-warning'
 @login_manager.user_loader
 def load_user(user_id):
     user_row = db.get_user(user_id)
+    print(type(user_id))
     return User(user_id, user_row[0], user_row[1]) if user_row else None
