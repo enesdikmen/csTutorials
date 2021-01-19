@@ -12,7 +12,7 @@
             <div class="columns ">
 
 
-                <div class="column is-6">
+                <div class="column is-4">
                     <p><strong>Platform: </strong> {{ tutorial.platform }} </p>
                     <p><strong>Required Skill:</strong> {{ tutorial.skill }}</p>
                     <p><strong>Length: </strong>
@@ -31,7 +31,7 @@
 
 
                 </div>
-                <div class="column is-3">
+                <div class="column is-4">
                     <p> <strong>Total Ratings:</strong> {{tutorial.ratingNum }}</p>
                     <p> <strong> Rating:</strong>
                         {% if tutorial.tutorialRating %}
@@ -41,7 +41,7 @@
                         {% endif %}
                     </p>
                 </div>
-                <div class="column is-3">
+                <div class="column is-4">
 
                     <strong> Topics: </strong><br>
                     {% for topic in topics %}
@@ -52,7 +52,9 @@
             </div>
         </div>
 
-
+        <div class="content block">
+            {{tutorial.info}}
+        </div>
 
         <div class="buttons block">
             <a href="{{ tutorial.url }}" class="button is-rounded is-info is-large" target="_blank">Go to Tutorial</a>

@@ -1,4 +1,3 @@
-
 from psycopg2 import connect
 from tables import Topic, Tutorial, Educator
 from passlib.hash import pbkdf2_sha256 as hasher
@@ -102,8 +101,8 @@ class Database:
             with conn.cursor() as cur:
                 cur.execute("SELECT*FROM Educator WHERE educatorName=%s;", (educatorName, ))
                 row = cur.fetchone()
-        return Educator(id=row[0], name=row[1], infoURL=row[2]) if row else None
-    
+        return row  
+
     def educator_rmvalid(self, educatorid):
         with connect(self.dbinfo) as conn:
             with conn.cursor() as cur:
@@ -242,7 +241,6 @@ class Database:
                 rowcount = cur.rowcount
         return rowcount
 
-
     def get_user(self, userID):
         with connect(self.dbinfo) as conn:
             with conn.cursor() as cur:
@@ -274,8 +272,7 @@ class Database:
                 conn.commit()
                 rowcount = cur.fetchone()
         return rowcount
-                
-                
+                              
 
     def get_tutorial(self, tutorialID):
         with connect(self.dbinfo) as conn:
@@ -307,7 +304,6 @@ class Database:
             sortq = " ORDER BY length DESC;"
         else:
             sortq = ";"
-
 
         if skill != "Any" or platform != "Any":
             if skill != "Any" and platform == "Any":

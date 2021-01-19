@@ -63,10 +63,6 @@ def account():
     return render_template('account.html', enrollments = enrollments, user=user)
 
 @login_required
-def admin_tutorial():
-    return render_template('admin_tutorial.html')
-
-@login_required
 def add_tutorial():
 
     if request.method == "POST":

@@ -17,7 +17,6 @@ app.add_url_rule("/logout", view_func=view.logout)
 app.add_url_rule("/delete_user", view_func=view.delete_user)
 app.add_url_rule("/edit_account", view_func=view.edit_account, methods=['GET', 'POST'])
 
-app.add_url_rule("/admin_tutorial", view_func=view.admin_tutorial, methods=['GET'])
 
 
 app.add_url_rule("/add_tutorial", view_func=view.add_tutorial, methods=['GET', 'POST'])

@@ -15,9 +15,8 @@
       </p>
       <ul class="menu-list">
         <li><a href="{{ url_for('add_topic') }}">Add-Remove Topics</a></li>
-        <li><a href="{{ url_for('admin_tutorial') }}">Add-Remove Tutorial</a></li>
+        <li><a href="{{ url_for('add_tutorial') }}">Add Tutorial</a></li>
         <li><a href="{{ url_for('add_educator') }}">Add-Remove Educators</a></li>
-        <li><a href="{{ url_for('add_educator') }}">Control Enrollments</a></li>
 
 
       </ul>
@@ -31,8 +30,7 @@
       <p><strong> User email: </strong> {{ current_user.email}}</p>
       <p><strong> Total enrollments: </strong> {{ user[3]}}</p>
       <p><strong> Account created at: </strong> {{ user[2].strftime(" %H:%M %d-%m-%Y")}}</p>
-      <a class="button is-info"
-        href="{{ url_for('edit_account') }}">Edit Account</a>
+      <a class="button is-info" href="{{ url_for('edit_account') }}">Edit Account</a>
       <a class="button is-danger"
         href="{{ url_for('delete_user', userid = current_user.id, useremail = current_user.email) }}">Delete Account</a>
 

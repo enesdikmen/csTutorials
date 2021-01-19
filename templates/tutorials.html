@@ -1,42 +1,45 @@
 {% extends "layout.html" %}
 
-{% block title %} Home {% endblock title %}
+{% block title %} Tutorials {% endblock title %}
 
 {% block content %}
 
 
 <div class="columns">
     <div class="column is-one-fifth">
-        
+        <h2 class="title is-5">Tutorials</h2>
         <form action="#" method="POST">
             <div class="field">
                 <label class="label">Required Skill</label>
                 <div class="control">
                     <div class="select">
-                    <select name="skill">
-                        <option value="Any" {%if skill==Any %}selected{%endif%}>Any</option>
-                        <option value="Beginner" {%if skill=="Beginner" %}selected{%endif%}>Beginner</option>
-                        <option value="Intermediate" {%if skill=="Intermediate" %}selected{%endif%}>Intermediate</option>
-                        <option value="Experienced "{%if skill=="Experienced" %}selected{%endif%}>Experienced</option>
-                    
-                    </select>
+                        <select name="skill">
+                            <option value="Any" {%if skill==Any %}selected{%endif%}>Any</option>
+                            <option value="Beginner" {%if skill=="Beginner" %}selected{%endif%}>Beginner</option>
+                            <option value="Intermediate" {%if skill=="Intermediate" %}selected{%endif%}>Intermediate
+                            </option>
+                            <option value="Experienced " {%if skill=="Experienced" %}selected{%endif%}>Experienced
+                            </option>
+
+                        </select>
+                    </div>
                 </div>
             </div>
-        </div>
 
 
             <div class="field">
                 <div class="label">Platform</div>
                 <div class="control">
                     <div class="select">
-                    <select name="platform">
-                        <option value="Any" {%if platform=="Any" %}selected{%endif%}>Any</option>
-                        <option value="Youtube" {%if platform=="Youtube" %}selected = "selected"{%endif%}>Youtube</option>
-                        <option value="Coursera" {%if platform=="Coursera" %}selected{%endif%}>Coursera</option>
-                        <option value="Other" {%if platform=="Other" %}selected{%endif%}>Other</option>
+                        <select name="platform">
+                            <option value="Any" {%if platform=="Any" %}selected{%endif%}>Any</option>
+                            <option value="Youtube" {%if platform=="Youtube" %}selected="selected" {%endif%}>Youtube
+                            </option>
+                            <option value="Coursera" {%if platform=="Coursera" %}selected{%endif%}>Coursera</option>
+                            <option value="Other" {%if platform=="Other" %}selected{%endif%}>Other</option>
 
-                    </select>
-                </div>
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -44,14 +47,15 @@
                 <div class="label">Topic</div>
                 <div class="control">
                     <div class="select">
-                    <select name="topic">
-                        <option value="Any" {%if topicid == "Any"%}selected{%endif%}>Any</option>
-                        {% for topic in topics %}
-                            <option value="{{topic[0]}}" {%if topicid == topic[0] %}selected{%endif%}>{{topic[1]}}</option>
-                        {% endfor %}
+                        <select name="topic">
+                            <option value="Any" {%if topicid=="Any" %}selected{%endif%}>Any</option>
+                            {% for topic in topics %}
+                            <option value="{{topic[0]}}" {%if topicid==topic[0] %}selected{%endif%}>{{topic[1]}}
+                            </option>
+                            {% endfor %}
 
-                    </select>
-                </div>
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -59,14 +63,18 @@
                 <div class="label">Sort by</div>
                 <div class="control">
                     <div class="select">
-                    <select name="sortby">
-                        <option value="default" {%if sortby=="default" %}selected{%endif%}>Default</option>
-                        <option value="ratingdec" {%if sortby=="ratingdec" %}selected{%endif%}>Rating(Decreasing)</option>
-                        <option value="ratinginc" {%if sortby=="ratinginc" %}selected{%endif%}>Rating(Increasing)</option>
-                        <option value="lengthinc" {%if sortby=="lengthinc" %}selected{%endif%}>Length(Increasing)</option>
-                        <option value="lengthdec" {%if sortby=="lengthdec" %}selected{%endif%}>Length(Decreasing)</option>
-                    </select>
-                </div>
+                        <select name="sortby">
+                            <option value="default" {%if sortby=="default" %}selected{%endif%}>Default</option>
+                            <option value="ratingdec" {%if sortby=="ratingdec" %}selected{%endif%}>Rating(Decreasing)
+                            </option>
+                            <option value="ratinginc" {%if sortby=="ratinginc" %}selected{%endif%}>Rating(Increasing)
+                            </option>
+                            <option value="lengthinc" {%if sortby=="lengthinc" %}selected{%endif%}>Length(Increasing)
+                            </option>
+                            <option value="lengthdec" {%if sortby=="lengthdec" %}selected{%endif%}>Length(Decreasing)
+                            </option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="field">
@@ -78,7 +86,7 @@
     </div>
 
     <div class="column">
-        
+
         <div class="columns is-multiline">
 
             {% for tutorial in tutorials %}
@@ -102,7 +110,7 @@
 
                     </div>
                     <div class="boxfooter">
-                        
+
                         <span class="tag is-info is-light">
                             <span class="icon has-text-warning">
                                 <i class="fas fa-star"></i>
@@ -111,7 +119,7 @@
                             %}
                         </span>
                         <span class=" tag is-danger ">{{ tutorial[1].platform }}</span>
-                    
+
                     </div>
                 </a>
             </div>
@@ -128,4 +136,3 @@
 
 
 {% endblock content %}
-

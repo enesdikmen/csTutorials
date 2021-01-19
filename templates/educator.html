@@ -4,52 +4,69 @@
 
 {% block content %}
 
-<!-- when editing an educator -->
-{% if current_user.is_authenticated and current_user.is_admin() and edit %}
-<form action="/edit_educator" method="POST">
-    <div class="field">
-        <label class=label>Educator Name</label>
-        <div class="control">
-            <input class="input" type="text" required="required" name="educatorName" value="{{ educator.name }}">
-        </div>
+<div class="columns">
+    <div class=" column is-offset-one-fifth is-three-fifths">
+
+
+        <!-- when editing an educator -->
+        {% if current_user.is_authenticated and current_user.is_admin() and edit %}
+        <form action="/edit_educator" method="POST">
+            <div class="field">
+                <label class=label>Educator Name</label>
+                <div class="control">
+                    <input class="input" type="text" required="required" name="educatorName" value="{{ educator[1] }}">
+                </div>
+            </div>
+            <div class="field">
+                <label class=label>Educator URL</label>
+                <div class="control">
+                    <input class="input" type="text" required="required" name="educatorURL" value="{{ educator[2] }}">
+                </div>
+            </div>
+            <input type="hidden" name="educatorID" value={{educator[0]}} />
+
+            <div class="field">
+                <div class="control">
+                    <button class="button is-primary is-small">Save</button>
+                </div>
+
+            </div>
+        </form>
+        {% else %}
+
+        <table class="table is-striped">
+
+            <tr>
+                <td>
+
+                    <span>{{educator[1]}}</span>
+
+                </td>
+                <td>
+                    <span><a href="{{educator[2]}}" target="_blank ">{{ educator[2] }}</a></span>
+                </td>
+                <td>
+                    <span>
+                        Rating: <strong>{{educator[4]}}</strong>
+                    </span>
+                </td>
+                <td>
+                    <span>
+                        Added at: <strong>{{educator[5].strftime("%d-%m-%Y")}}</strong>
+                    </span>
+                </td>
+            </tr>
+
+        </table>
+
+        {% endif %}
+        {% if current_user.is_authenticated and current_user.is_admin() and not edit %}
+
+        <a class="button" href="{{ url_for('educator', educatorName=educator[1], edit=True) }}">Edit</a>
+        <a class="button is-danger"
+            href="{{ url_for('delete_educator', educatorID=educator[0], educatorName=educator[1]) }}">Delete</a>
+
+        {% endif %}
     </div>
-    <div class="field">
-        <label class=label>Educator URL</label>
-        <div class="control">
-            <input class="input" type="text" required="required" name="educatorURL" value="{{ educator.infoURL }}">
-        </div>
-    </div>
-    <input type="hidden" name="educatorID" value={{educator.id}} />
-
-    <div class="field">
-        <div class="control">
-            <button class="button is-primary is-small">Save</button>
-        </div>
-        
-    </div>
-</form>
-{% else %}
-
-<table class="table is-striped is-fullwidth">
-
-    <tr>
-        <td>
-            
-            <span>{{educator.name}}</span>    
-                
-        </td>
-        <td>
-            <span><a href="{{educator.infoURL}}" target="_blank ">{{ educator.infoURL }}</a></span>
-        </td>
-    </tr>
-    
-</table>
-
-{% endif %}
-{% if current_user.is_authenticated and current_user.is_admin() and not edit %}
-
-<a class="button" href="{{ url_for('educator', educatorName=educator.name, edit=True) }}">Edit</a>
-<a class="button is-danger" href="{{ url_for('delete_educator', educatorID=educator.id, educatorName=educator.name) }}">Delete</a>
-
-{% endif %}
+</div>
 {% endblock content %}

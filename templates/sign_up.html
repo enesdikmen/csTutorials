@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %} Home {% endblock title %}
+{% block title %} Sign Up {% endblock title %}
 
 {% block content %}
 <div class="columns">
@@ -10,19 +10,19 @@
             {{ form.hidden_tag() }}
             <div class="field">
                 {{ form.email.label(class="label") }}
-            
+
                 {% if form.email.errors %}
-                    <div class="control">
-                        {{ form.email(class="input is-danger") }}
-                    </div>
-                    {% for error in form.email.errors %}
-                        <p class="help is-danger"> {{ error }} </p>
-                    {% endfor %}
-                    
+                <div class="control">
+                    {{ form.email(class="input is-danger") }}
+                </div>
+                {% for error in form.email.errors %}
+                <p class="help is-danger"> {{ error }} </p>
+                {% endfor %}
+
                 {% else %}
-                    <div class="control">
-                            {{ form.email(class="input") }}
-                    </div>
+                <div class="control">
+                    {{ form.email(class="input") }}
+                </div>
                 {% endif %}
             </div>
 
@@ -30,34 +30,34 @@
                 {{ form.password.label(class="label") }}
 
                 {% if form.password.errors %}
-                    <div class="control">
-                        {{ form.password(class="input is-danger") }}
-                    </div>
-                    {% for error in form.password.errors %}
-                        <p class="help is-danger"> {{ error }} </p>
-                    {% endfor %}
-                    
+                <div class="control">
+                    {{ form.password(class="input is-danger") }}
+                </div>
+                {% for error in form.password.errors %}
+                <p class="help is-danger"> {{ error }} </p>
+                {% endfor %}
+
                 {% else %}
-                    <div class="control">
-                            {{ form.password(class="input") }}
-                    </div>
+                <div class="control">
+                    {{ form.password(class="input") }}
+                </div>
                 {% endif %}
             </div>
 
             <div class="field">
                 {{ form.confirm_password.label(class="label") }}
                 {% if form.confirm_password.errors %}
-                    <div class="control">
-                        {{ form.confirm_password(class="input is-danger") }}
-                    </div>
-                    {% for error in form.confirm_password.errors %}
-                        <p class="help is-danger"> {{ error }} </p>
-                    {% endfor %}
-                    
+                <div class="control">
+                    {{ form.confirm_password(class="input is-danger") }}
+                </div>
+                {% for error in form.confirm_password.errors %}
+                <p class="help is-danger"> {{ error }} </p>
+                {% endfor %}
+
                 {% else %}
-                    <div class="control">
-                            {{ form.confirm_password(class="input") }}
-                    </div>
+                <div class="control">
+                    {{ form.confirm_password(class="input") }}
+                </div>
                 {% endif %}
             </div>
 
@@ -67,7 +67,8 @@
                 </div>
             </div>
             <div>
-                <p>If you already have an account&nbsp; <a class="is-link is-info" href="{{ url_for('login')}}">Sign In</a> </p>
+                <p>If you already have an account&nbsp; <a class="is-link is-info" href="{{ url_for('login')}}">Sign
+                        In</a> </p>
             </div>
 
         </form>
