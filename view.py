@@ -124,9 +124,11 @@ def tutorials():
         platform = request.form["platform"]
         sortby = request.form["sortby"]
         topicid = request.form["topic"]
+        if topicid != "Any":
+            topicid = int(topicid)
         tutorials =db.get_tutorials_filtered(sortby, skill, platform, topicid)
         
-        return render_template('tutorials.html', topics = sorted(topics, key=lambda row: row[1]), topicid = int(topicid), tutorials = tutorials, skill = skill, platform = platform, sortby = sortby)
+        return render_template('tutorials.html', topics = sorted(topics, key=lambda row: row[1]), topicid = topicid, tutorials = tutorials, skill = skill, platform = platform, sortby = sortby)
    
 
 @login_required
