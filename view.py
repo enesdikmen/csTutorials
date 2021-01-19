@@ -1,7 +1,5 @@
 from flask import render_template, request, url_for, redirect, flash, current_app, abort
-from ast import literal_eval    
-import psycopg2
-from user_forms import SignUpForm, LoginForm, User
+from user_forms import SignUpForm, LoginForm, User, EditAccountForm
 from passlib.hash import pbkdf2_sha256 as hasher
 from flask_login import login_user, current_user, logout_user, login_required
 from db import db
@@ -59,9 +57,10 @@ def logout():
     return redirect(url_for('main'))
 
 @login_required
-def account():        
+def account():
+    user = db.get_user(current_user.id)      
     enrollments = db.get_enrollments_of(current_user.id)
-    return render_template('account.html', enrollments = enrollments, db=db)
+    return render_template('account.html', enrollments = enrollments, user=user)
 
 @login_required
 def admin_tutorial():
@@ -121,18 +120,18 @@ def tutorials():
     
         tutorials = db.get_tutorials()
 
-        return render_template('tutorials.html', topics = topics, tutorials = tutorials)
+        return render_template('tutorials.html', topics = sorted(topics, key=lambda row: row[1]), tutorials = tutorials)
     else:
         topics = db.get_topics()
 
         skill = request.form["skill"]
         platform = request.form["platform"]
         sortby = request.form["sortby"]
-
-        tutorials =db.get_tutorials_filtered(sortby, skill, platform)
-        return render_template('tutorials.html', topics = topics, tutorials = tutorials, skill = skill, platform = platform, sortby = sortby)
-
-    
+        topicid = request.form["topic"]
+        tutorials =db.get_tutorials_filtered(sortby, skill, platform, topicid)
+        
+        return render_template('tutorials.html', topics = sorted(topics, key=lambda row: row[1]), topicid = int(topicid), tutorials = tutorials, skill = skill, platform = platform, sortby = sortby)
+   
 
 @login_required
 def edit_tutorial():
@@ -228,11 +227,9 @@ def delete_educator():
 
 @login_required
 def edit_educator():
-    
     educatorName = request.form["educatorName"]
     educatorURL = request.form["educatorURL"]
     educatorID = request.form["educatorID"]
-
     if db.update_educator(educatorID, educatorName, educatorURL):
             flash(f"Educator '{educatorName}' edited", "is-success")
     return redirect(url_for('educator', educatorName=educatorName)) 
@@ -249,8 +246,7 @@ def enroll():
     tutorialid = request.args.get('tutorialid')
     if current_user.is_authenticated:
         if db.add_enrollment(current_user.id, tutorialid):
-            flash(f"Enrolled", "is-success")
-            
+            flash(f"Enrolled", "is-success")  
         return redirect(url_for('account')) 
 
 @login_required
@@ -270,7 +266,6 @@ def remove_enrollment():
 
 @login_required
 def add_comment():
-
     userid = request.form["userid"]
     tutorialid = request.form["tutorialid"]
     educatorid = request.form["educatorid"]
@@ -310,5 +305,36 @@ def delete_comment():
             flash(f"Rating deleted", "is-success")
     return redirect(url_for('tutorial', tutorialid = tutorialid))
     
-    
+@login_required
+def delete_user():
+    userid = request.args.get('userid')
+    useremail = request.args.get('useremail')
+    if db.delete_user(userid):
+        db.refresh_allratings()
+        db.refresh_alleducatorrating()
+        flash(f"Account for {useremail} is deleted.", "is-success")
+    return redirect(url_for('main'))
 
+@login_required
+def edit_account():
+    form = EditAccountForm()
+    if form.validate_on_submit():
+        new_email = form.email.data
+        current_password = form.current_password.data
+
+        validation = db.validate_edituser(new_email, current_user.email, current_password)
+        if validation == True:
+            new_password = form.password.data 
+            hashed = hasher.hash(new_password)
+            if db.update_user(current_user.id, new_email, hashed):
+                flash(f"Account information updated.", "is-success")
+            return redirect(url_for('account'))
+        elif validation == -1:
+            flash('Incorrect user password. Please Try again.', "is-danger")
+
+        else:
+            flash('This email is already in use.', "is-danger")
+
+
+        
+    return render_template('edit_account.html', form=form)  

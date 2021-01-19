@@ -9,7 +9,7 @@
   <div class="column is-one-fifth has-background-grey-lighter">
 
     {% if current_user.is_admin() %}
-    <aside class="menu">
+    <aside class="menu block">
       <p class="menu-label">
         Admin Tools
       </p>
@@ -26,13 +26,22 @@
       {% endif %}
   </div>
   <div class="column">
-    <h1>User email:{{ current_user.email}}</h1>
+    <div class="block">
+      <h1 class="title is-4">Account Information</h1>
+      <p><strong> User email: </strong> {{ current_user.email}}</p>
+      <p><strong> Total enrollments: </strong> {{ user[3]}}</p>
+      <p><strong> Account created at: </strong> {{ user[2].strftime(" %H:%M %d-%m-%Y")}}</p>
+      <a class="button is-info"
+        href="{{ url_for('edit_account') }}">Edit Account</a>
+      <a class="button is-danger"
+        href="{{ url_for('delete_user', userid = current_user.id, useremail = current_user.email) }}">Delete Account</a>
 
+    </div>
 
   </div>
 </div>
 <table class="table is-bordered is-hoverable">
-{% if enrollments %}
+  {% if enrollments %}
   <tr>
     <th>Title</th>
     <th>Platform</th>
@@ -50,7 +59,9 @@
     <td>{{ enrollment[3] }}</td>
     <td>{{ enrollment[4].strftime("%d-%m-%Y") }}</td>
     <td>{{ enrollment[5] }}</td>
-    <td> <a class="button is-danger is-small" href="{{ url_for('remove_enrollment', enrollmentid=enrollment[0], title=enrollment[1], userid = current_user.id) }}">Drop</a> </td>
+    <td> <a class="button is-danger is-small"
+        href="{{ url_for('remove_enrollment', enrollmentid=enrollment[0], title=enrollment[1], userid = current_user.id) }}">Drop</a>
+    </td>
   </tr>
   {% endfor %}
 

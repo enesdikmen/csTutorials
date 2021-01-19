@@ -41,6 +41,21 @@
             </div>
 
             <div class="field">
+                <div class="label">Topic</div>
+                <div class="control">
+                    <div class="select">
+                    <select name="topic">
+                        <option value="Any" {%if topicid == "Any"%}selected{%endif%}>Any</option>
+                        {% for topic in topics %}
+                            <option value="{{topic[0]}}" {%if topicid == topic[0] %}selected{%endif%}>{{topic[1]}}</option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+                </div>
+            </div>
+
+            <div class="field">
                 <div class="label">Sort by</div>
                 <div class="control">
                     <div class="select">

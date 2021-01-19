@@ -208,11 +208,45 @@ class Database:
             return row
         else:
             return False
-    
+
+    def delete_user(self, userid):
+        with connect(self.dbinfo) as conn:
+            with conn.cursor() as cur:
+                cur.execute("DELETE FROM useracc WHERE userid= %s;", (userid,))
+                conn.commit()
+                rowcount = cur.rowcount
+        return rowcount
+
+    def validate_edituser(self, new_useremail, current_useremail, password):
+
+        with connect(self.dbinfo) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT userid FROM UserAcc WHERE useremail= %s;", (new_useremail,))
+                email_exists = cur.fetchall()
+                cur.execute("SELECT password FROM UserAcc WHERE useremail= %s;", (current_useremail,))
+                hashed = cur.fetchone()
+
+        if not email_exists:
+            if hasher.verify(password, hashed[0]):
+                return True
+            else:
+                return -1     
+        else:
+            return -2        
+
+    def update_user(self, userid, new_email, new_password):
+        with connect(self.dbinfo) as conn:
+            with conn.cursor() as cur:
+                cur.execute("UPDATE useracc SET useremail=%s, password=%s WHERE userid=%s;", (new_email, new_password, userid))
+                conn.commit()
+                rowcount = cur.rowcount
+        return rowcount
+
+
     def get_user(self, userID):
         with connect(self.dbinfo) as conn:
             with conn.cursor() as cur:
-                cur.execute(f"SELECT useremail, password FROM UserAcc WHERE userid= %s;", (userID,))
+                cur.execute("SELECT useremail, password, createdat, enrollmentnum FROM UserAcc WHERE userid= %s;", (userID,))
                 row = cur.fetchone()
         return row
 
@@ -261,7 +295,7 @@ class Database:
             tutorials.append((row[0], Tutorial(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])))
         return tutorials
     
-    def get_tutorials_filtered(self, sorting=None, skill=None, platform=None):
+    def get_tutorials_filtered(self, sorting=None, skill=None, platform=None, topicid=None):
         
         if sorting == "ratingdec":
             sortq = " ORDER BY tutorialrating DESC NULLS LAST;"
@@ -291,8 +325,19 @@ class Database:
                 cur.execute("SELECT*FROM tutorial "+whereq+sortq)
                 rows = cur.fetchall()
 
-        for row in rows:
-            tutorials.append((row[0], Tutorial(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])))
+        if topicid != "Any":
+            topictuts = self.get_topictuts(topicid)
+            for row in rows:
+                for topictut in topictuts:
+                    if topictut[0] == row[0]:  
+                        tutorials.append((row[0], Tutorial(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])))
+        
+        else:
+            for row in rows:
+                tutorials.append((row[0], Tutorial(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])))
+
+
+        
         return tutorials
 
 
@@ -369,6 +414,13 @@ class Database:
                 conn.commit()
                 rowcount = cur.rowcount
         return rowcount
+
+    def get_topictuts(self, topicid):
+        with connect(self.dbinfo) as conn:  
+            with conn.cursor() as cur:
+                cur.execute("SELECT tutorialid FROM tutorialtopic WHERE topicid = %s;", (topicid, ))
+                rows = cur.fetchall()
+        return rows
 
 
     def get_topics_of(self, tutorialid):#returns the topics of passed tutorial

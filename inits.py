@@ -14,6 +14,8 @@ app.add_url_rule("/home", view_func=view.main)
 app.add_url_rule("/sign_up", view_func=view.sign_up, methods=['GET', 'POST'])
 app.add_url_rule("/login", view_func=view.login, methods=['GET', 'POST'])
 app.add_url_rule("/logout", view_func=view.logout)
+app.add_url_rule("/delete_user", view_func=view.delete_user)
+app.add_url_rule("/edit_account", view_func=view.edit_account, methods=['GET', 'POST'])
 
 app.add_url_rule("/admin_tutorial", view_func=view.admin_tutorial, methods=['GET'])
 

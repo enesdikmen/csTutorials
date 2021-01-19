@@ -34,3 +34,12 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8, max=20)])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
+
+class EditAccountForm(FlaskForm):
+    email = StringField('New Email', validators=[DataRequired(), Email()])
+    current_password = PasswordField('Current Password', validators=[DataRequired(), Length(min=8, max=20)])
+    password = PasswordField('New Password', validators=[DataRequired(), Length(min=8, max=20)])
+    confirm_password = PasswordField('Confirm New Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Save')
+
+    
