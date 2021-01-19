@@ -60,9 +60,11 @@ def init_table():
             Status VARCHAR(50),
             PRIMARY KEY(EnrollmentID),
             FOREIGN KEY (UserID)
-            REFERENCES UserAcc(UserID),
+            REFERENCES UserAcc(UserID)
+            ON DELETE CASCADE,
             FOREIGN KEY (TutorialID)
             REFERENCES Tutorial(TutorialID)
+            ON DELETE CASCADE
             );
             """
             cur.execute(querry)
@@ -76,9 +78,11 @@ def init_table():
             RatingTime TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY(RatingID),
             FOREIGN KEY (UserID)
-            REFERENCES UserAcc(UserID),
+            REFERENCES UserAcc(UserID)
+            ON DELETE CASCADE,
             FOREIGN KEY (TutorialID)
             REFERENCES Tutorial(TutorialID)
+            ON DELETE CASCADE
             );
             """
             cur.execute(querry)
@@ -97,9 +101,11 @@ def init_table():
             TopicID INT NOT NULL,
             PRIMARY KEY(TutTopicID),
             FOREIGN KEY(TutorialID)
-            REFERENCES Tutorial(TutorialID),
+            REFERENCES Tutorial(TutorialID)
+            ON DELETE CASCADE,
             FOREIGN KEY(TopicID)
             REFERENCES Topic(TopicID)
+            ON DELETE CASCADE
             );
             """
             cur.execute(querry)

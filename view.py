@@ -10,7 +10,6 @@ from tables import Topic, Educator, Tutorial
 
 
 def main():
-
     tutorials = db.get_tutorials()
     rows = db.get_topic_names()
     
@@ -93,6 +92,15 @@ def add_tutorial():
         educators = db.get_educator_names()
         return render_template('add_tutorial.html', topics = sorted(topics, key=lambda row: row[1]), educators = sorted(educators))
 
+@login_required
+def delete_tutorial():
+    tutorialid = request.args.get('tutorialid')
+    if db.remove_tutorial(tutorialid):
+        flash(f"Tutorial deleted", "is-success")
+
+
+    return redirect(url_for('main'))
+
 def tutorial():
     tutorialid = request.args.get('tutorialid')
     if tutorialid == None:
@@ -109,7 +117,7 @@ def tutorials():
         topics = db.get_topics()
     
         tutorials = db.get_tutorials()
-        
+
         return render_template('tutorials.html', topics = topics, tutorials = tutorials)
     else:
         topics = db.get_topics()
@@ -185,7 +193,7 @@ def delete_topic():
     for topicName in form_topics:
         if db.delete_topic(topicName):        
             flash(f"Topic '{topicName}' deleted", "is-success")
-
+        
     return redirect(url_for('add_topic'))
 
 @login_required
@@ -206,10 +214,13 @@ def add_educator():#educatorRarting will be determined at another place
 @login_required
 def delete_educator():
     educatorID = request.args.get('educatorID')
-    print("idasd: ", educatorID)
     educatorName = request.args.get('educatorName')
-    if db.delete_educator(educatorID):
-        flash(f"Educator '{educatorName}' deleted", "is-success")
+    if not db.educator_rmvalid(educatorID):
+        if db.delete_educator(educatorID):
+            flash(f"Educator '{educatorName}' deleted", "is-success")
+    else:
+        flash(f"Educator '{educatorName}' can't be deleted. Remove it's tutorials first.", "is-danger")
+        
     return redirect(url_for('add_educator'))
 
 @login_required

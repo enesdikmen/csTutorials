@@ -19,6 +19,8 @@ app.add_url_rule("/add_tutorial", view_func=view.add_tutorial, methods=['GET', '
 app.add_url_rule("/tutorial", view_func=view.tutorial)
 app.add_url_rule("/tutorials", view_func=view.tutorials, methods=['GET', 'POST'])
 app.add_url_rule("/edit_tutorial", view_func=view.edit_tutorial, methods=['GET', 'POST'])
+app.add_url_rule("/delete_tutorial", view_func=view.delete_tutorial, methods=['GET'])
+
 
 app.add_url_rule("/add_topic", view_func=view.add_topic, methods=['GET', 'POST'])
 app.add_url_rule("/edit_topic", view_func=view.edit_topic, methods=['POST'])

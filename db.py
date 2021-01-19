@@ -37,6 +37,21 @@ class Database:
                 rowcount =  cur.rowcount
         return rowcount
 
+    def validate_rmtopic(self, topicid):
+        with connect(self.dbinfo) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT tutorialid FROM tutorialtopic WHERE topicid = %s;", (topicid, ))
+                row = cur.fetchone()
+        return row
+
+
+    def get_topicid(self, topicname):
+        with connect(self.dbinfo) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT topicid FROM Topic WHERE topicName = %s;", (topicname, ))
+                row = cur.fetchone()
+        return row
+
     def get_topic(self, topicName):
         with connect(self.dbinfo) as conn:
             with conn.cursor() as cur:
@@ -89,6 +104,14 @@ class Database:
                 row = cur.fetchone()
         return Educator(id=row[0], name=row[1], infoURL=row[2]) if row else None
     
+    def educator_rmvalid(self, educatorid):
+        with connect(self.dbinfo) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT tutorialid FROM tutorial WHERE educatorid=%s;", (educatorid, ))
+                row = cur.fetchall()
+        return row
+         
+
     def get_educatorname(self, educatorid):
         with connect(self.dbinfo) as conn:
             with conn.cursor() as cur:
@@ -267,7 +290,12 @@ class Database:
         ratings = self.get_tutorialPoints(tutorialid)
         ratingnum = len(ratings)
         if ratingnum == 0:
-            return None
+            with connect(self.dbinfo) as conn:  
+                with conn.cursor() as cur:
+                    cur.execute("UPDATE tutorial SET tutorialrating=%s WHERE tutorialid=%s;", (None, tutorialid))
+                    rowcount = conn.commit()
+            return rowcount
+        
         else:
             total = 0
             for rating in ratings:
@@ -279,6 +307,14 @@ class Database:
                     cur.execute("UPDATE tutorial SET ratingnum=%s, tutorialrating=%s WHERE tutorialid=%s;", (ratingnum, avgRating, tutorialid))
                     rowcount = conn.commit()
             return rowcount
+
+    def refresh_allratings(self):
+        with connect(self.dbinfo) as conn:  
+                with conn.cursor() as cur:
+                    cur.execute("SELECT tutorialid FROM tutorial;")
+                    rows = cur.fetchall()
+        for row in rows:
+            self.refresh_tutorialRating(row[0])
 
     # tutorialtopic table methods
 
